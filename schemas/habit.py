@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 
 class Habit(BaseModel):
-    id: int
     title: str
     details: str
-    ownerid: int
+    owner_id: int
+
+class HabitCreate(Habit):
+    id: int
 
 class Config:
     orm_mode = True

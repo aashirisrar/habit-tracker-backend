@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from schemas.user import Habit
+from schemas.habit import Habit
 
 from services.database_operations import create_habit_database
 from configurations.database import get_database_session

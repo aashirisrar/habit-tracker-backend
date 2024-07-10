@@ -12,7 +12,7 @@ def create_user_database(db: Session, user: UserCreate):
     return db_user
 
 def create_habit_database(db: Session, habit: Habit):
-    db_habit = Habit(id=habit.id, title = habit.title, details= habit.details)
+    db_habit = Habit(title = habit.title, details= habit.details, owner_id = habit.owner_id)
     db.add(db_habit)
     db.commit()
     db.refresh(db_habit)
