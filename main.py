@@ -3,6 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Union
 
 from routers import users, habits
+from models import habit, user
+from configurations.database import engine
+
+habit.Base.metadata.create_all(bind=engine)
+user.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
