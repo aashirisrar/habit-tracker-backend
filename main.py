@@ -1,18 +1,19 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Union
 
-from routers import users, habits
-from models import habit, user
+from routers import users, habits, values
+from models import habit, user, value
 from configurations.database import engine
 
 habit.Base.metadata.create_all(bind=engine)
 user.Base.metadata.create_all(bind=engine)
+value.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(habits.router)
+app.include_router(values.router)
 
 
 origins = [

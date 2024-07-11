@@ -5,6 +5,7 @@ from typing import List
 from schemas.user import UserCreate
 from models.user import User
 from models.habit import Habit
+from models.value import Value
 
 def create_user_database(database: Session, user: UserCreate):
     fake_hashed_password = user.password
@@ -30,3 +31,15 @@ def get_habit_with_id_database(database: Session, habitId):
     query = text(f"SELECT * FROM habits where id={habitId}")
     result = database.execute(query)
     return result.mappings().first()
+
+def create_values_database(database: Session, value: Value):
+    database_value = Value(habit_id=value.habit_id, date=value.date, count=value.count)
+    database.add(database_value)
+    database.commit()
+    database.refresh(database_value)
+    return database_value
+
+def get_habit_valuesDatabase_database(database: Session, habitId) -> List[Value]:
+    query = text(f"SELECT * FROM values where habit_id={habitId}")
+    result = database.execute(query)
+    return result.mappings().all()

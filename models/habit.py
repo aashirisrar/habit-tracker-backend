@@ -12,3 +12,4 @@ class Habit(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="habits")
+    values = relationship("Value", back_populates="ownerHabit")
