@@ -25,3 +25,8 @@ def get_habits_database(database: Session, userId) -> List[Habit]:
     query = text(f"SELECT * FROM habits where owner_id={userId}")
     result = database.execute(query)
     return result.mappings().all()
+
+def get_habit_with_id_database(database: Session, habitId):
+    query = text(f"SELECT * FROM habits where id={habitId}")
+    result = database.execute(query)
+    return result.mappings().first()
