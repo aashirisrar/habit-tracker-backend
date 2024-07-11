@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from schemas.habit import Habit
 
-from services.database_operations import create_habit_database
+from services.database_operations import create_habit_database,get_habits_database
 from configurations.database import get_database_session
 
 router = APIRouter(
@@ -23,3 +23,11 @@ async def create_habit_(habit:Habit, database: Session = Depends(get_database_se
         return {"Response": "Habit created Successfully"}
     else:
         return {"Response" : "Error! Habit not created"}
+    
+@router.post("/get-user-habits")
+async def get_habits_(userId, database: Session = Depends(get_database_session)):
+    habits = get_habits_database(database,userId)
+    if habits is None:
+        return {"Response" : "Error! No habits found"}
+    else:
+        return {"Response" : "Habits found", "habits":habits}
