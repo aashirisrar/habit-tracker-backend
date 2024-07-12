@@ -43,3 +43,9 @@ def get_habit_valuesDatabase_database(database: Session, habitId) -> List[Value]
     query = text(f"SELECT * FROM values where habit_id={habitId}")
     result = database.execute(query)
     return result.mappings().all()
+
+def delete_habit_with_id_database(database: Session, habitId):
+    query = text(f"DELETE FROM habits where id={habitId}")
+    database.execute(query)
+    database.commit()
+    return True
