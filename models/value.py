@@ -9,6 +9,6 @@ class Value(Base):
     id = Column(Integer,  primary_key=True)
     date = Column(String)
     count = Column(String)
-    habit_id = Column(Integer, ForeignKey("habits.id"))
+    habit_id = Column(Integer, ForeignKey("habits.id", ondelete='CASCADE', onupdate='CASCADE'))
 
     ownerHabit = relationship("Habit", back_populates="values")
