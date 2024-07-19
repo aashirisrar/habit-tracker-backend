@@ -56,7 +56,7 @@ def delete_habit_with_id_database(database: Session, habitId):
 
 # user signup
 def create_user_service(database: Session, user: UserCreate):
-    query = text(f"SELECT id FROM users WHERE email = {user.email}")
+    query = text(f"SELECT id FROM users WHERE email='{user.email}'")
     result = database.execute(query)
     user_in_database = result.mappings().first()
 
@@ -74,7 +74,7 @@ def create_user_service(database: Session, user: UserCreate):
 
 # user authentication
 def validate_user(database: Session, email: str, password: str):
-    query = text(f"SELECT id, name, email, password FROM users WHERE email = {email} LIMIT 1")
+    query = text(f"SELECT id, name, email, password FROM users WHERE email='{email}' LIMIT 1")
     result = database.execute(query)
     user = result.mappings().first()
 
