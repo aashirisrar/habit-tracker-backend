@@ -22,3 +22,8 @@ async def create_user_(user:UserCreate, database: Session = Depends(get_database
         return {"Response": "User created Successfully"}
     else:
         return {"Response" : "Error! User not created"}
+
+@router.post("/user-login")
+def login_validation(user: UserCreate):
+    validated_user = validate_user(user.email, user.password)
+    return validated_user

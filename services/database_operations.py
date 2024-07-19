@@ -2,10 +2,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 from typing import List
 
+from datetime import timedelta
+
 from schemas.user import UserCreate
 from models.user import User
 from models.habit import Habit
 from models.value import Value
+from configurations.token_configuration import ACCESS_TOKEN_EXPIRY_MINUTE, create_access_token, decoded_access_token
+from utilities.user import verify_password, hash_password
 
 def create_user_database(database: Session, user: UserCreate):
     fake_hashed_password = user.password
@@ -49,3 +53,36 @@ def delete_habit_with_id_database(database: Session, habitId):
     database.execute(query)
     database.commit()
     return True
+
+# user signup
+def create_user_service(database: Session, user: UserCreate):
+    query = text(f"SELECT id FROM users WHERE email = {user.email}")
+    result = database.execute(query)
+    user_in_database = result.mappings().first()
+
+    if user_in_database:
+        return {"error": "user already exists"}
+    
+    hashed_password = hash_password(user.password)
+    user.password = hashed_password
+
+    query = text(f"INSERT INTO users (name, email, password) VALUES ({user.email}, {user.password})")
+    result = database.execute(query)
+    new_user = result.mappings().first()
+    database.commit()
+    return new_user
+
+# user authentication
+def validate_user(database: Session, email: str, password: str):
+    query = text(f"SELECT id, name, email, password FROM users WHERE email = {email} LIMIT 1")
+    result = database.execute(query)
+    user = result.mappings().first()
+
+    if user and verify_password(password, user['password']):
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRY_MINUTE)
+        access_token = create_access_token(data={"mail": user["email"],"id": user["id"],"name": user["name"]}, expires_delta=access_token_expires)
+        # decoded = decoded_access_token(access_token)
+        print(access_token)
+        return { "access_token": access_token, "token_type": "bearer", "id": user["id"], "name": user["name"], "email": user["email"]}
+    else:
+        return None
