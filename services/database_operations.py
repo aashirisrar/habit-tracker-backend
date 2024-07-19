@@ -73,16 +73,17 @@ def create_user_service(database: Session, user: UserCreate):
     return database_user
 
 # user authentication
-def validate_user(database: Session, email: str, password: str):
-    query = text(f"SELECT id, name, email, password FROM users WHERE email='{email}' LIMIT 1")
+def validate_user(database: Session, userCreated: UserCreate):
+    query = text(f"SELECT * FROM users WHERE email='{userCreated.email}'")
     result = database.execute(query)
     user = result.mappings().first()
+    print(user)
 
-    if user and verify_password(password, user['password']):
+    if user and verify_password(userCreated.password, user['hashed_password']):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRY_MINUTE)
-        access_token = create_access_token(data={"mail": user["email"],"id": user["id"],"name": user["name"]}, expires_delta=access_token_expires)
+        access_token = create_access_token(data={"mail": user["email"],"id": user["id"]}, expires_delta=access_token_expires)
         # decoded = decoded_access_token(access_token)
         print(access_token)
-        return { "access_token": access_token, "token_type": "bearer", "id": user["id"], "name": user["name"], "email": user["email"]}
+        return { "access_token": access_token, "token_type": "bearer", "id": user["id"],  "email": user["email"]}
     else:
         return None

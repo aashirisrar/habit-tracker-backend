@@ -21,6 +21,6 @@ async def create_user(user:UserCreate, database: Session = Depends(get_database_
     return new_user
 
 @router.post("/user-login")
-def login_validation(user: UserCreate):
-    validated_user = validate_user(user.email, user.password)
+def login_validation(user: UserCreate, database: Session = Depends(get_database_session)):
+    validated_user = validate_user(database, user)
     return validated_user
