@@ -66,11 +66,11 @@ def create_user_service(database: Session, user: UserCreate):
     hashed_password = hash_password(user.password)
     user.password = hashed_password
 
-    query = text(f"INSERT INTO users (name, email, password) VALUES ({user.email}, {user.password})")
-    result = database.execute(query)
-    new_user = result.mappings().first()
+    database_user = User(email=user.email, hashed_password=user.password)
+    database.add(database_user)
     database.commit()
-    return new_user
+    database.refresh(database_user)
+    return database_user
 
 # user authentication
 def validate_user(database: Session, email: str, password: str):

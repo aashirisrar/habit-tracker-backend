@@ -17,11 +17,8 @@ async def user_read():
 
 @router.post("/create-user")
 async def create_user(user:UserCreate, database: Session = Depends(get_database_session)):
-    userCreated = create_user_service(database,user)
-    if userCreated:
-        return {"Response": "User created Successfully"}
-    else:
-        return {"Response" : "Error! User not created"}
+    new_user = create_user_service(database,user)
+    return new_user
 
 @router.post("/user-login")
 def login_validation(user: UserCreate):
