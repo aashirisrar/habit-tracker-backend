@@ -56,7 +56,7 @@ def delete_habit_with_id_database(database: Session, habitId):
 
 # user signup
 def create_user_service(database: Session, user: UserCreate):
-    query = text(f"SELECT id FROM users WHERE email='{user.email}'")
+    query = text(f"SELECT * FROM users WHERE email='{user.email}'")
     result = database.execute(query)
     user_in_database = result.mappings().first()
 
