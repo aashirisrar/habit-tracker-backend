@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from configurations.database import get_database_session
-from services.database_operations import create_user_service, validate_user
+from services.database_operations import create_user_service, validate_user, fetch_user_details_database
 from schemas.user import UserCreate
 
 router = APIRouter(
@@ -24,3 +24,8 @@ async def create_user(user:UserCreate, database: Session = Depends(get_database_
 def login_validation(user: UserCreate, database: Session = Depends(get_database_session)):
     validated_user = validate_user(database, user)
     return validated_user
+
+@router.post("/get-user")
+def fetch_user_details(id: int, database: Session = Depends(get_database_session)):
+    user = fetch_user_details_database(database, id)
+    return user

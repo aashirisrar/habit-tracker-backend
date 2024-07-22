@@ -77,7 +77,6 @@ def validate_user(database: Session, userCreated: UserCreate):
     query = text(f"SELECT * FROM users WHERE email='{userCreated.email}'")
     result = database.execute(query)
     user = result.mappings().first()
-    print(user)
 
     if user and verify_password(userCreated.password, user['hashed_password']):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRY_MINUTE)
@@ -87,3 +86,9 @@ def validate_user(database: Session, userCreated: UserCreate):
         return { "access_token": access_token, "token_type": "bearer", "id": user["id"],  "email": user["email"]}
     else:
         return None
+    
+def fetch_user_details_database(database:Session, id: int):
+    query = text(f"SELECT * FROM users WHERE id={id}")
+    result = database.execute(query)
+    return result.mappings().first()
+
